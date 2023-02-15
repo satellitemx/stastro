@@ -1,0 +1,15 @@
+---
+const { content } = Astro.props;
+---
+
+<div id="editor" contenteditable="" set:html={content} />
+
+<style>
+	#editor {
+		display: block;
+		position: relative;
+		margin: 1rem 0 calc(1rem + var(--action-strip-height));
+		min-height: calc(100dvh - 2rem - var(--action-strip-height));
+		outline: none;
+	}
+</style>

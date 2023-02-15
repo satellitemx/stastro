@@ -1,0 +1,23 @@
+---
+const noteId = Astro.props["note-id"];
+---
+
+<button id="btn-save" data-note-id={noteId}>Save</button>
+
+<script>
+	import { noteIsSaving } from "src/lib/state/note-save.state";
+
+	const btn = document.getElementById("btn-save")!;
+	const editor = document.getElementById("editor")!;
+	btn.addEventListener("click", () => {
+		noteIsSaving.value = true;
+		fetch(`/api/nost/${btn.dataset.noteId}`, {
+			method: "POST",
+			body: editor.innerHTML,
+		})
+			.then()
+			.finally(() => {
+				noteIsSaving.value = false;
+			});
+	});
+</script>

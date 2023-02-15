@@ -1,0 +1,13 @@
+---
+import hashids from "src/lib/hashids";
+import supabase from "src/lib/supabase";
+
+const { count } = await supabase
+	.from("nost")
+	.select("*", { count: "exact", head: true });
+
+const hashedId = hashids.encode([count ?? 0]);
+return Astro.redirect(`/nost/${hashedId}`, 303);
+
+// @ts-ignore
+---

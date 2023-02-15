@@ -1,0 +1,36 @@
+---
+import SaveButton from "src/components/nost/save-button.astro";
+import SavingStatus from "src/components/nost/saving-status";
+const noteId = Astro.props["note-id"]
+---
+
+<div id="action-strip">
+	<SavingStatus client:only noteId={noteId} />
+	<SaveButton note-id={noteId} />
+</div>
+
+<style>
+	#action-strip {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: var(--action-strip-height);
+		backdrop-filter: blur(20px);
+		background: rgba(255, 255, 255, 0.95);
+		box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.05);
+		border-top: 1px solid rgba(0, 0, 0, 0.1);
+		padding: 0 1rem;
+	}
+	@media (prefers-color-scheme: dark) {
+		#action-strip {
+			background: rgba(0, 0, 0, 0.5);
+			box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.05);
+			border-top: 1px solid rgba(255, 255, 255, 0.1);
+		}
+	}
+</style>

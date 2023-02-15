@@ -1,0 +1,26 @@
+---
+import Editor from "src/components/nost/editor.astro";
+import NostLayout from "src/components/shared/layout/nost-layout.astro";
+import hashids from "src/lib/hashids";
+import supabase from "src/lib/supabase";
+
+const { noteId } = Astro.params;
+const id = hashids.decode(noteId!).pop();
+if (id === undefined) {
+	return Astro.redirect("/nost", 303);
+}
+const { data, count } = await supabase
+	.from("nost")
+	.select("content, views")
+	.eq("id", id);
+const row = data?.pop();
+if (count === 1) {
+	await supabase.from("nost").update({ view: row!.views + 1 });
+}
+
+const content = row?.content || "";
+---
+
+<NostLayout note-id={noteId}>
+	<Editor content={content} />
+</NostLayout>
