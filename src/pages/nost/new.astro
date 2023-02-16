@@ -2,12 +2,8 @@
 import hashids from "src/lib/hashids";
 import supabase from "src/lib/supabase";
 
-// Check if user has previously entered a page
-// If so, redirect user to that page
-if (Astro.cookies.has("nost")) {
-	const cookie = Astro.cookies.get("nost");
-	return Astro.redirect(`/nost/${cookie.value}`, 303);
-}
+// Clear previous noteId
+Astro.cookies.delete("nost");
 
 // Use hashids to get a new note hash
 const { count } = await supabase

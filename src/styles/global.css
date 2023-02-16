@@ -1,3 +1,28 @@
+@import url(./animations.css);
+
 :root {
 	--action-strip-height: 65px;
+	--border: 1px solid rgba(0, 0, 0, 0.1);
+	--box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.05);
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.05);
+	}
+}
+
+dialog {
+	border: var(--border);
+	box-shadow: var(--box-shadow);
+}
+
+dialog[open] {
+	animation: popup 300ms both, fade-in 300ms both;
+}
+
+dialog::backdrop {
+	backdrop-filter: blur(20px) saturate(1.8) brightness(1.1);
+	animation: fade-in 300ms both;
 }

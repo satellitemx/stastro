@@ -1,0 +1,26 @@
+---
+import FlexContainer from "src/components/shared/layout/flex-container.astro";
+---
+
+<button id="new-btn">New</button>
+<dialog id="new-dialog">
+	<p>You are about to create a new empty nost.</p>
+	<p>
+		Unless you make note of current URL, this nost may <strong>not</strong> be retrievable.
+	</p>
+	<form method="dialog">
+		<FlexContainer>
+			<button autofocus>Cancel</button>
+			<a href="/nost/new">Yes, create a new nost ↗</a>
+		</FlexContainer>
+	</form>
+</dialog>
+
+<script>
+	const btn = document.getElementById("new-btn") as HTMLButtonElement;
+	const dialog = document.getElementById("new-dialog") as HTMLDialogElement;
+
+	btn.addEventListener("click", () => {
+		dialog.showModal();
+	});
+</script>

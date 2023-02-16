@@ -1,18 +1,23 @@
 ---
+import NewButton from "src/components/nost/new-button.astro";
 import SaveButton from "src/components/nost/save-button.astro";
 import SavingStatus from "src/components/nost/saving-status";
-const noteId = Astro.props["note-id"]
+import FlexContainer from "src/components/shared/layout/flex-container.astro";
+const noteId = Astro.props["note-id"];
 ---
 
 <div id="action-strip">
+	<FlexContainer>
+		<NewButton />
+		<SaveButton note-id={noteId} />
+	</FlexContainer>
 	<SavingStatus client:only noteId={noteId} />
-	<SaveButton note-id={noteId} />
 </div>
 
 <style>
 	#action-strip {
 		display: flex;
-		flex-direction: row;
+		flex-direction: row-reverse;
 		justify-content: space-between;
 		align-items: center;
 		position: fixed;
@@ -22,15 +27,13 @@ const noteId = Astro.props["note-id"]
 		height: var(--action-strip-height);
 		backdrop-filter: blur(20px);
 		background: rgba(255, 255, 255, 0.95);
-		box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.05);
-		border-top: 1px solid rgba(0, 0, 0, 0.1);
+		box-shadow: var(--box-shadow);
+		border-top: var(--border);
 		padding: 0 1rem;
 	}
 	@media (prefers-color-scheme: dark) {
 		#action-strip {
 			background: rgba(0, 0, 0, 0.5);
-			box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.05);
-			border-top: 1px solid rgba(255, 255, 255, 0.1);
 		}
 	}
 </style>
