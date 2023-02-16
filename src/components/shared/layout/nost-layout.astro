@@ -8,7 +8,11 @@ const noteId = Astro.props["note-id"];
 <html>
 	<head>
 		<title>Nost - {noteId}</title>
-		<link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
+		<link
+			rel="stylesheet"
+			href="https://unpkg.com/simpledotcss/simple.min.css"
+		/>
+		<slot name="head" />
 	</head>
 	<body>
 		<slot />

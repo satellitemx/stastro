@@ -1,8 +1,10 @@
 ---
 import Editor from "src/components/nost/editor.astro";
 import NostLayout from "src/components/shared/layout/nost-layout.astro";
+import Og from "src/components/shared/og/og.astro";
 import hashids from "src/lib/hashids";
 import supabase from "src/lib/supabase";
+import removeHTMLTags from "src/lib/utilities/remove-html-tag";
 
 const { noteId } = Astro.params;
 const id = hashids.decode(noteId!).pop();
@@ -19,8 +21,10 @@ if (count === 1) {
 }
 
 const content = row?.content || "";
+const description = removeHTMLTags(content.slice(0, 200));
 ---
 
 <NostLayout note-id={noteId}>
+	<Og slot="head" title={noteId} description={description} />
 	<Editor content={content} />
 </NostLayout>
