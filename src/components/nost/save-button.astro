@@ -7,7 +7,7 @@ const noteId = Astro.props["note-id"];
 <script>
 	import { noteIsSaving } from "src/lib/state/note-save.state";
 
-	const btn = document.getElementById("btn-save")!;
+	const btn = document.getElementById("btn-save") as HTMLButtonElement;
 	const editor = document.getElementById("editor")!;
 	btn.addEventListener("click", () => {
 		noteIsSaving.value = true;
@@ -15,9 +15,16 @@ const noteId = Astro.props["note-id"];
 			method: "POST",
 			body: editor.innerHTML,
 		})
-			.then()
+			.then(() => {
+				btn.innerText = "Saved"
+				btn.disabled = true
+			})
 			.finally(() => {
 				noteIsSaving.value = false;
+				setTimeout(() => {
+					btn.innerText = "Save"
+					btn.disabled = false
+				}, 5000)
 			});
 	});
 </script>
