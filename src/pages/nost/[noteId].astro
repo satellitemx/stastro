@@ -15,9 +15,7 @@ try {
 if (id === undefined) {
 	return Astro.redirect("/nost", 303);
 }
-if (!Astro.cookies.has("nost")) {
-	Astro.cookies.set("nost", noteId);
-}
+Astro.cookies.set("nost", noteId);
 const { data } = await supabase
 	.from("nost")
 	.select("content, views")
