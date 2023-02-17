@@ -16,15 +16,15 @@ const noteId = Astro.props["note-id"];
 			body: editor.innerHTML,
 		})
 			.then(() => {
-				btn.innerText = "Saved"
-				btn.disabled = true
+				btn.innerText = "Saved";
+				btn.disabled = true;
 			})
 			.finally(() => {
 				noteIsSaving.value = false;
 				setTimeout(() => {
-					btn.innerText = "Save"
-					btn.disabled = false
-				}, 5000)
+					btn.innerText = "Save";
+					btn.disabled = false;
+				}, 5000);
 			});
 	});
 </script>
