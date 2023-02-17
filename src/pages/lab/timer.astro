@@ -1,0 +1,111 @@
+---
+import Favicon from "src/components/shared/head/favicon.astro";
+---
+
+<html>
+	<head>
+		<title>Timer</title>
+		<Favicon />
+		<style>
+			@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@1,700&display=swap");
+
+			@keyframes flash {
+				0% {
+					background: rgba(255, 255, 255, 0.3);
+				}
+				100% {
+					background: rgba(255, 255, 255, 0);
+				}
+			}
+
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				font-family: "Roboto Condensed", sans-serif;
+				font-variant-numeric: "tabular-nums";
+				background: #222;
+				color: #f2f2f2;
+			}
+
+			div {
+				display: grid;
+				position: absolute;
+				align-items: center;
+				justify-content: center;
+				top: 50%;
+				left: 50%;
+				translate: -50% -50%;
+			}
+
+			div:not(:active) {
+				animation: flash 500ms ease;
+			}
+
+			span {
+				font-size: 10vmin;
+				line-height: 10vmin;
+				padding: 10vmin;
+				cursor: default;
+			}
+		</style>
+	</head>
+	<body>
+		<div>
+			<span id="timer">05:00</span>
+		</div>
+		<script>
+			import { computed,signal } from "@preact/signals";
+			import { addSeconds } from "date-fns";
+
+			// helper functions
+			const formatMs = (ms: number): string => {
+				if (ms < 60 * 1000) {
+					const seconds = Math.floor(ms / 1000);
+					const hun = Math.floor((ms % 1000) / 10);
+					return (
+						seconds.toString().padStart(2, "0") +
+						"." +
+						hun.toString().padStart(2, "0")
+					);
+				}
+				const minutes = Math.floor(ms / 60000);
+				const seconds = Math.floor((ms % 60000) / 1000);
+				return (
+					minutes.toString().padStart(2, "0") +
+					":" +
+					seconds.toString().padStart(2, "0")
+				);
+			};
+
+			// init
+			const duration = signal(5 * 60);
+			const renderTime = new Date();
+			const startTime = signal(renderTime.getTime());
+			const endTime = signal(addSeconds(renderTime, duration.value).getTime());
+			const difference = computed(() => endTime.value - startTime.value);
+
+			const timer = document.getElementById("timer") as HTMLSpanElement;
+
+			const startTimer = () => {
+				const current = new Date();
+				startTime.value = current.getTime();
+				endTime.value = addSeconds(current, duration.value).getTime();
+				updateTimer();
+			};
+
+			const updateTimer = () => {
+				if (difference.value > 0) {
+					timer.innerText = formatMs(difference.value);
+					startTime.value = Math.min(endTime.value, new Date().getTime());
+					requestAnimationFrame(() => updateTimer());
+				}
+			};
+
+			timer.addEventListener("click", startTimer);
+		</script>
+	</body>
+</html>
