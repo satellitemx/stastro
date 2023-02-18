@@ -1,9 +1,9 @@
 ---
 import NewButton from "src/components/nost/new-button.astro";
 import SaveButton from "src/components/nost/save-button.astro";
-import SavingStatus from "src/components/nost/saving-status";
 import FlexContainer from "src/components/shared/layout/flex-container.astro";
 const noteId = Astro.props["note-id"];
+const views = Astro.props.views;
 ---
 
 <div id="action-strip">
@@ -11,7 +11,7 @@ const noteId = Astro.props["note-id"];
 		<NewButton />
 		<SaveButton note-id={noteId} />
 	</FlexContainer>
-	<SavingStatus client:only noteId={noteId} />
+	<span>Nost <strong>{noteId}</strong> has been viewed {views} times. </span>
 </div>
 
 <style>

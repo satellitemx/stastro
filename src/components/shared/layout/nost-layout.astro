@@ -4,6 +4,7 @@ import Favicon from "src/components/shared/head/favicon.astro";
 import "src/styles/global.css";
 
 const noteId = Astro.props["note-id"];
+const views = Astro.props.views;
 ---
 
 <html>
@@ -20,7 +21,7 @@ const noteId = Astro.props["note-id"];
 	</head>
 	<body>
 		<slot />
-		<ActionStrip note-id={noteId} />
+		<ActionStrip note-id={noteId} views={views} />
 	</body><style>
 		* {
 			margin: 0;

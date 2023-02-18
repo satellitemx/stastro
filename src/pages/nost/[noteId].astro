@@ -30,10 +30,11 @@ if (row) {
 }
 
 const content = row?.content || "";
+const views = row?.views || 0;
 const description = removeHTMLTags(content.slice(0, 200));
 ---
 
-<NostLayout note-id={noteId}>
+<NostLayout note-id={noteId} views={views}>
 	<Og slot="head" title={noteId} description={description} />
 	<Editor content={content} />
 </NostLayout>

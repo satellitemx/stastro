@@ -13,3 +13,16 @@ const { content } = Astro.props;
 		outline: none;
 	}
 </style>
+
+<script>
+	import insertTextAtCursor from "src/lib/utilities/insert-text-at-cursor";
+
+	const editor = document.getElementById("editor") as HTMLDivElement;
+	editor.addEventListener("paste", (event) => {
+		event.preventDefault();
+		const text = event.clipboardData?.getData("text/plain");
+		if (text) {
+			insertTextAtCursor(text);
+		}
+	});
+</script>
