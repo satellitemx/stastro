@@ -24,9 +24,11 @@ const noteId = Astro.props["note-id"];
 		noteIsSaving.value = true;
 		btn.innerText = "Saving...";
 		btn.disabled = true;
+		const formData = new FormData()
+		formData.append("content", editor.innerHTML)
 		fetch(`/api/nost/${btn.dataset.noteId}`, {
 			method: "POST",
-			body: editor.innerHTML,
+			body: formData
 		})
 			.then(() => {
 				btn.innerText = "Saved";
