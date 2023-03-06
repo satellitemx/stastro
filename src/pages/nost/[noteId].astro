@@ -5,7 +5,7 @@ import Og from "src/components/shared/head/og.astro";
 import NostLayout from "src/components/shared/layout/nost-layout.astro";
 import hashids from "src/lib/hashids";
 import supabase from "src/lib/supabase";
-import removeHTMLTags from "src/lib/utilities/remove-html-tag";
+import removeHTMLTags from "src/lib/utilities/remove-html-tags";
 
 const noteId = Astro.params.noteId!;
 let id: NumberLike | undefined;
