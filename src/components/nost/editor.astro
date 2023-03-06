@@ -2,9 +2,15 @@
 const { content } = Astro.props;
 ---
 
-<div id="editor" contenteditable="" set:html={content} />
-
+<div id="container">
+	<div set:html={content} id="editor" contenteditable />
+</div>
 <style>
+	#container {
+		display: block;
+		position: relative;
+	}
+	#container::part(editor),
 	#editor {
 		display: block;
 		position: relative;
@@ -15,14 +21,22 @@ const { content } = Astro.props;
 </style>
 
 <script>
-	import insertTextAtCursor from "src/lib/utilities/insert-text-at-cursor";
-
+	const container = document.getElementById("container") as HTMLDivElement;
 	const editor = document.getElementById("editor") as HTMLDivElement;
-	editor.addEventListener("paste", (event) => {
-		event.preventDefault();
-		const text = event.clipboardData?.getData("text/plain");
-		if (text) {
-			insertTextAtCursor(text);
-		}
-	});
+	editor.setAttribute("part", "editor");
+
+	container.removeChild(editor);
+	const shadowRoot = container.attachShadow({ mode: "open" });
+	shadowRoot.appendChild(editor);
+
+	// editor.innerHTML = ""
+	// shadowRoot.innerHTML = editor.dataset.html
+
+	// editor.addEventListener("paste", (event) => {
+	// 	event.preventDefault();
+	// 	const text = event.clipboardData?.getData("text/plain");
+	// 	if (text) {
+	// 		insertTextAtCursor(text);
+	// 	}
+	// });
 </script>

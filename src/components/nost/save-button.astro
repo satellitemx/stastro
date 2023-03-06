@@ -8,7 +8,7 @@ const noteId = Astro.props["note-id"];
 	import { noteIsSaving } from "src/lib/state/note-save.state";
 
 	const btn = document.getElementById("btn-save") as HTMLButtonElement;
-	const editor = document.getElementById("editor")!;
+	const editor = document.querySelector("#container")!.shadowRoot!.querySelector("#editor") as HTMLDivElement
 
 	document.addEventListener("keydown", (event) => {
 		const isCmdOrCtrlPressed = event.metaKey || event.ctrlKey;
