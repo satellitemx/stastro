@@ -1,0 +1,16 @@
+---
+import DrivePage from "src/components/lab/drive";
+import Favicon from "src/components/shared/head/favicon.astro";
+import Viewport from "src/components/shared/head/viewport.astro";
+---
+
+<html>
+	<head>
+		<title>Web Drive</title>
+		<Favicon />
+		<Viewport />
+	</head>
+	<body>
+		<DrivePage client:only="preact" />
+	</body>
+</html>
