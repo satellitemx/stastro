@@ -96,7 +96,7 @@ const LoginForm = () => {
 					login(values.email, values.password)
 				})}
 			>
-				<TextInput required {...form.getInputProps("email")} label="Email" />
+				<TextInput required autocapitalize="none" {...form.getInputProps("email")} label="Email" />
 				<PasswordInput autocomplete="current-password" required {...form.getInputProps("password")} label="Password" />
 				<Stack align="stretch" mt="xs">
 					<Button type="submit" loading={refreshingToken.value || loggingIn.value}>Login</Button>
