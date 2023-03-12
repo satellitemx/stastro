@@ -1,10 +1,11 @@
-import { ActionIcon, Anchor, Badge, Button, Card, FileInput, Group, MantineProvider, Menu, PasswordInput, Stack, Table, Text, TextInput } from "@mantine/core"
-import { useForm } from "@mantine/form"
+import { ActionIcon, Anchor, Badge, Button, Card, FileInput, Group, MantineProvider, Stack, Table, Text, TextInput } from "@mantine/core"
 import { modals, ModalsProvider } from "@mantine/modals"
 import { Notifications, notifications } from "@mantine/notifications"
-import { signal, useSignal } from "@preact/signals"
-import { IconDoorExit, IconMenu2, IconTrash, IconX } from "@tabler/icons-react"
-import { useLayoutEffect, useRef } from "preact/hooks"
+import { effect, signal, useSignal } from "@preact/signals"
+import { IconTrash, IconX } from "@tabler/icons-react"
+import { useRef } from "preact/hooks"
+import { NavHeader } from "src/components/account"
+import { isLoggedIn } from "src/components/account/state"
 import pb from "src/lib/pocketbase"
 
 type File = {
@@ -12,10 +13,19 @@ type File = {
 	id: string;
 	file: string;
 	filename: string;
+	type: string;
+	created: string;
 }
 
-const isLoggedIn = signal(false)
 const uploadedFiles = signal<Array<File>>([])
+
+effect(() => {
+	if (isLoggedIn.value) {
+		refreshUploadeList()
+	} else {
+		uploadedFiles.value = []
+	}
+})
 
 const deleteFile = (id: string) => {
 	pb.collection("files").delete(id)
@@ -32,7 +42,9 @@ const deleteFile = (id: string) => {
 }
 
 const refreshUploadeList = () => {
-	pb.collection("files").getFullList<File>()
+	pb.collection("files").getFullList<File>({
+		sort: "-created,id"
+	})
 		.then(files => {
 			uploadedFiles.value = files
 		})
@@ -45,95 +57,6 @@ const refreshUploadeList = () => {
 		})
 }
 
-const LoginForm = () => {
-	const form = useForm({
-		initialValues: {
-			email: "",
-			password: "",
-		}
-	})
-
-	const loggingIn = useSignal(false)
-	const login = (username: string, password: string) => {
-		loggingIn.value = true
-		pb.collection("users").authWithPassword(username, password)
-			.then(() => {
-				isLoggedIn.value = true
-				refreshUploadeList()
-			})
-			.catch(() => {
-				form.setErrors({
-					username: "Invalid credentials",
-					password: "Invalid credentials",
-				})
-			})
-			.finally(() => {
-				loggingIn.value = false
-			})
-	}
-
-	const refreshingToken = useSignal(false)
-	useLayoutEffect(() => {
-		refreshingToken.value = true
-		pb.collection("users").authRefresh()
-			.then(() => {
-				isLoggedIn.value = true
-				refreshUploadeList()
-			})
-			.finally(() => {
-				refreshingToken.value = false
-			})
-	}, [])
-
-	return <>
-		<h2>Login with account</h2>
-		<Card
-			shadow="sm"
-			withBorder
-		>
-			<form
-				onSubmit={form.onSubmit(values => {
-					login(values.email, values.password)
-				})}
-			>
-				<TextInput required autocapitalize="none" {...form.getInputProps("email")} label="Email" />
-				<PasswordInput autocomplete="current-password" required {...form.getInputProps("password")} label="Password" />
-				<Stack align="stretch" mt="xs">
-					<Button type="submit" loading={refreshingToken.value || loggingIn.value}>Login</Button>
-				</Stack>
-			</form>
-		</Card>
-	</>
-}
-
-const ActionCentre = () => {
-	const logOut = () => {
-		pb.authStore.clear()
-		isLoggedIn.value = false
-	}
-	return <Group>
-		<Menu
-			withArrow
-			withinPortal
-			shadow="md"
-			position="bottom-start"
-		>
-			<Menu.Target>
-				<Group align="center">
-					<Button
-						leftIcon={<IconMenu2 />}
-					>{pb.authStore.model?.email}</Button>
-				</Group>
-			</Menu.Target>
-			<Menu.Dropdown>
-				<Menu.Item color="red" icon={<IconDoorExit size="1rem" />} onClick={logOut}>
-					Log out
-				</Menu.Item>
-			</Menu.Dropdown>
-		</Menu>
-	</Group>
-}
-
 const FileUploadForm = () => {
 	const fileInputRef = useRef<HTMLInputElement>(null)
 	const fileNameRef = useRef<HTMLInputElement>(null)
@@ -143,7 +66,10 @@ const FileUploadForm = () => {
 	const isUploading = useSignal(false)
 	const handleUpload = (formData: FormData) => {
 		isUploading.value = true
+		const formFile = formData.get("file") as globalThis.File
 		formData.set("uploader", pb.authStore.model!.id)
+		formData.set("filename", formData.get("filename") || formFile.name)
+		formData.set("type", formFile.type)
 		pb.collection("files").create(formData)
 			.then(() => {
 				notifications.show({
@@ -166,59 +92,58 @@ const FileUploadForm = () => {
 				isUploading.value = false
 			})
 	}
-	return <>
-		<h4>Upload a file</h4>
-		<Card
-			shadow="sm"
-			withBorder
-		>
-			<form onSubmit={e => {
-				e.preventDefault()
-				const formData = new FormData(e.target as HTMLFormElement)
-				handleUpload(formData)
-			}}>
-				<FileInput
-					ref={fileInputRef}
-					name="file"
-					style={{ display: "none" }}
-					onChange={selected => {
-						file.value = selected
-						if (selected) {
-							fileNameRef.current!.value = selected.name
-						}
-					}}
-				/>
-				<TextInput
-					ref={fileNameRef}
-					name="filename"
-					label={<Group>
-						<span>{file.value ? "Filename" : "Select a file"}</span>
-						{file.value && <Badge size="xs">{file.value.name}</Badge>}
-					</Group>}
+	return <Card
+		shadow="sm"
+		withBorder
+	>
+		<form onSubmit={e => {
+			e.preventDefault()
+			const formData = new FormData(e.target as HTMLFormElement)
+			handleUpload(formData)
+		}}>
+			<FileInput
+				ref={fileInputRef}
+				name="file"
+				style={{ display: "none" }}
+				onChange={selected => {
+					file.value = selected
+					if (selected) {
+						fileNameRef.current!.value = selected.name
+					}
+				}}
+			/>
+			<TextInput
+				ref={fileNameRef}
+				name="filename"
+				autocomplete="off"
+				label={<Group>
+					<span>{file.value ? "Filename" : "Select a file"}</span>
+					{file.value && <Badge size="xs">{file.value.type}</Badge>}
+				</Group>}
+				onClick={() => {
+					if (!file.value) {
+						fileInputRef.current?.click()
+					}
+				}}
+				placeholder={file.value?.name || ""}
+				rightSection={file.value && <ActionIcon
 					onClick={() => {
-						if (!file.value) {
-							fileInputRef.current?.click()
-						}
+						file.value = null
+						fileNameRef.current!.value = ""
 					}}
-					rightSection={file.value && <ActionIcon
-						onClick={() => {
-							file.value = null
-							fileNameRef.current!.value = ""
-						}}
-					>
-						<IconX size="1rem" />
-					</ActionIcon>}
-				/>
-				<Stack align="stretch" mt="xs">
-					<Button
-						type="submit"
-						disabled={!file.value}
-						loading={isUploading.value}
-					>Upload</Button>
-				</Stack>
-			</form>
-		</Card>
-	</>
+				>
+					<IconX size="1rem" />
+				</ActionIcon>}
+			/>
+			<Stack align="stretch" mt="xs">
+				<Button
+					type="submit"
+					disabled={!file.value}
+					loading={isUploading.value}
+				>Upload</Button>
+			</Stack>
+		</form>
+	</Card>
 }
 
 const FileList = () => {
@@ -234,38 +159,46 @@ const FileList = () => {
 		<tbody>
 			{uploadedFiles.value.map(file => <tr key={file.id}>
 				<td>
-					<Anchor
-						href={`${import.meta.env.PUBLIC_PB_URL}/api/files/${file.collectionId}/${file.id}/${file.file}`}
-						target="_blank"
-					>{file.filename}</Anchor>
+					<Stack align="start" spacing={0}>
+						<Anchor
+							href={`${import.meta.env.PUBLIC_PB_URL}/api/files/${file.collectionId}/${file.id}/${file.file}`}
+							target="_blank"
+							lineClamp={1}
+						>{file.filename}</Anchor>
+						<Group align="center" spacing="xs">
+							<Text size="xs" color="gray">
+								{new Date(file.created).toLocaleDateString()}
+							</Text>
+							{file.type && <Badge size="xs" color="gray">{file.type}</Badge>}
+						</Group>
+					</Stack>
 				</td>
 				<td>
 					<Group position="right">
-						<Button.Group>
-							<Button
-								compact
-								leftIcon={<IconTrash size="1rem" />}
-								color="red"
-								onClick={() => {
-									modals.openConfirmModal({
-										title: "Are you sure?",
-										children: <Text size="sm">
-											This will delete <strong>{file.filename}</strong> on server.
-										</Text>,
-										labels: {
-											confirm: "Delete",
-											cancel: "Cancel",
-										},
-										confirmProps: {
-											color: "red"
-										},
-										onConfirm: () => {
-											deleteFile(file.id)
-										}
-									})
-								}}
-							>Delete</Button>
-						</Button.Group>
+						<Button
+							compact
+							leftIcon={<IconTrash size="1rem" />}
+							color="red"
+							variant="light"
+							onClick={() => {
+								modals.openConfirmModal({
+									title: "Are you sure?",
+									children: <Text size="sm">
+										This will delete <strong>{file.filename}</strong> on server.
+									</Text>,
+									labels: {
+										confirm: "Delete",
+										cancel: "Cancel",
+									},
+									confirmProps: {
+										color: "red"
+									},
+									onConfirm: () => {
+										deleteFile(file.id)
+									}
+								})
+							}}
+						>Delete</Button>
 					</Group>
 				</td>
 			</tr>)}
@@ -275,29 +208,28 @@ const FileList = () => {
 
 const AppPage = () => {
 	return <>
-		<ActionCentre />
-		<FileUploadForm />
-		<FileList />
+		<Stack
+			align="stretch"
+			style={{
+				width: "100dvw",
+				maxWidth: "600px",
+				margin: "0 auto",
+				padding: "0 0.5rem",
+			}}
+			spacing="1rem"
+		>
+			<FileUploadForm />
+			<FileList />
+		</Stack>
 	</>
 }
 
 export default function DriveApp() {
 	return <MantineProvider withGlobalStyles withNormalizeCSS>
+		<NavHeader title="Web Drive" />
 		<Notifications />
 		<ModalsProvider>
-			<Stack
-				align="stretch"
-				style={{
-					width: "calc(100dvw - 2rem)",
-					maxWidth: "600px",
-					margin: "1rem auto"
-				}}
-				spacing="1rem"
-			>
-				{isLoggedIn.value
-					? <AppPage />
-					: <LoginForm />}
-			</Stack>
+			{isLoggedIn.value && <AppPage />}
 		</ModalsProvider>
 	</MantineProvider>
 }

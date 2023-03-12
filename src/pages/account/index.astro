@@ -1,0 +1,17 @@
+---
+import AccountPage from "src/components/account/account-page";
+import Favicon from "src/components/shared/head/favicon.astro";
+import Viewport from "src/components/shared/head/viewport.astro";
+
+---
+
+<html>
+	<head>
+		<title>Account</title>
+		<Viewport />
+		<Favicon />
+	</head>
+	<body>
+		<AccountPage client:only="preact" />
+	</body>
+</html>
