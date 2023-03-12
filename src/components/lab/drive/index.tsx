@@ -153,6 +153,7 @@ const FileUploadForm = () => {
 				})
 				file.value = null
 				fileNameRef.current!.value = ""
+				refreshUploadeList()
 			})
 			.catch(() => {
 				notifications.show({
