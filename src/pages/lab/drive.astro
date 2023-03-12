@@ -1,5 +1,5 @@
 ---
-import DrivePage from "src/components/lab/drive";
+import DriveApp from "src/components/lab/drive";
 import Favicon from "src/components/shared/head/favicon.astro";
 import Viewport from "src/components/shared/head/viewport.astro";
 ---
@@ -11,6 +11,6 @@ import Viewport from "src/components/shared/head/viewport.astro";
 		<Viewport />
 	</head>
 	<body>
-		<DrivePage client:only="preact" />
+		<DriveApp client:only="preact" />
 	</body>
 </html>

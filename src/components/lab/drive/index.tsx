@@ -281,13 +281,14 @@ const AppPage = () => {
 	</>
 }
 
-export default function DrivePage() {
+export default function DriveApp() {
 	return <MantineProvider withGlobalStyles withNormalizeCSS>
 		<Notifications />
 		<ModalsProvider>
 			<Stack
 				align="stretch"
 				style={{
+					width: "calc(100dvw - 2rem)",
 					maxWidth: "600px",
 					margin: "1rem auto"
 				}}
