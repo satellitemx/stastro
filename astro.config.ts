@@ -10,7 +10,9 @@ import preact from "@astrojs/preact";
 export default defineConfig({
 	output: "server",
 	adapter: vercel(),
-	integrations: [preact()],
+	integrations: [preact({
+		compat: true
+	})],
 	build: {
 		format: "directory"
 	}
