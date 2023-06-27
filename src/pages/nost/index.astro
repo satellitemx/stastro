@@ -1,5 +1,5 @@
 ---
-import { db } from "src/firebase/server";
+import { fbAdminDb } from "src/firebase/server";
 import hashids from "src/lib/hashids";
 
 // Check if user has previously entered a page
@@ -10,7 +10,7 @@ if (Astro.cookies.has("nost")) {
 }
 
 // Use hashids to get a new note hash
-const { size } = await db.collection("nost").get();
+const { size } = await fbAdminDb.collection("nost").get();
 const hashedId = hashids.encode(size + 1);
 return Astro.redirect(`/nost/${hashedId}`, 303);
 ---

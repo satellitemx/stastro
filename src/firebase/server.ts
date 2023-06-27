@@ -15,8 +15,8 @@ const serviceAccount = {
   client_x509_cert_url: import.meta.env.FIREBASE_CLIENT_CERT_URL,
 };
 
-export const app = initializeApp({
+export const fbAdmin = initializeApp({
   credential: cert(serviceAccount as ServiceAccount),
 });
 
-export const db = getFirestore(app)
+export const fbAdminDb = getFirestore(fbAdmin)

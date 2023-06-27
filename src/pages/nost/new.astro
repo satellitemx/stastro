@@ -1,12 +1,12 @@
 ---
-import { db } from "src/firebase/server";
+import { fbAdminDb } from "src/firebase/server";
 import hashids from "src/lib/hashids";
 
 // Clear previous noteId
 Astro.cookies.delete("nost");
 
 // Use hashids to get a new note hash
-const { size } = await db.collection("nost").get();
+const { size } = await fbAdminDb.collection("nost").get();
 const hashedId = hashids.encode(size + 1);
 Astro.cookies.set("nost", hashedId);
 

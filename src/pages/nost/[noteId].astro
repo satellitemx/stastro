@@ -3,7 +3,7 @@ import type { NumberLike } from "hashids/cjs/util";
 import Editor from "src/components/nost/editor.astro";
 import Og from "src/components/shared/head/og.astro";
 import NostLayout from "src/components/shared/layout/nost-layout.astro";
-import { db } from "src/firebase/server";
+import { fbAdminDb } from "src/firebase/server";
 import hashids from "src/lib/hashids";
 import removeHTMLTags from "src/lib/utilities/remove-html-tags";
 
@@ -17,7 +17,7 @@ if (id === undefined) {
 }
 Astro.cookies.set("nost", noteId);
 
-const docRef = db.collection("nost").doc(noteId);
+const docRef = fbAdminDb.collection("nost").doc(noteId);
 const docSnapshot = await docRef.get();
 const doc = docSnapshot.data();
 

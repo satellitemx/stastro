@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { db } from "src/firebase/server";
+import { fbAdminDb } from "src/firebase/server";
 
 export const post: APIRoute = async (ctx) => {
 	const { noteId } = ctx.params
@@ -10,7 +10,7 @@ export const post: APIRoute = async (ctx) => {
 	const content = payload.get("content")
 
 	try {
-		await db.collection("nost").doc(noteId).set({
+		await fbAdminDb.collection("nost").doc(noteId).set({
 			content,
 		}, {
 			mergeFields: ["content"]
