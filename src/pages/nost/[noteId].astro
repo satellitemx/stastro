@@ -3,8 +3,8 @@ import type { NumberLike } from "hashids/cjs/util";
 import Editor from "src/components/nost/editor.astro";
 import Og from "src/components/shared/head/og.astro";
 import NostLayout from "src/components/shared/layout/nost-layout.astro";
+import { db } from "src/firebase/server";
 import hashids from "src/lib/hashids";
-import supabase from "src/lib/supabase";
 import removeHTMLTags from "src/lib/utilities/remove-html-tags";
 
 const noteId = Astro.params.noteId!;
@@ -16,22 +16,25 @@ if (id === undefined) {
 	return Astro.redirect("/nost", 303);
 }
 Astro.cookies.set("nost", noteId);
-const { data } = await supabase
-	.from("nost")
-	.select("content, views")
-	.eq("id", id);
-const row = data?.pop();
-if (row) {
-	supabase
-		.from("nost")
-		.update({ views: row.views + 1 })
-		.eq("id", id)
-		.then();
-}
 
-const content = row?.content || "";
-const views = row?.views || 0;
+const docRef = db.collection("nost").doc(noteId);
+const docSnapshot = await docRef.get();
+const doc = docSnapshot.data();
+
+const content = doc?.content || "";
+const views = (doc?.views || 0) + 1;
 const description = removeHTMLTags(content.slice(0, 200));
+
+try {
+	docRef.set(
+		{
+			views,
+		},
+		{
+			mergeFields: ["views"],
+		}
+	);
+} catch (_) {}
 ---
 
 <NostLayout note-id={noteId} views={views}>
