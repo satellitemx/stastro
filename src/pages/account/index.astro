@@ -1,8 +1,9 @@
 ---
-import AccountPage from "src/components/account/account-page";
+import GoogleSigninButton from "src/components/account/google-signin-button.astro";
 import Favicon from "src/components/shared/head/favicon.astro";
 import Viewport from "src/components/shared/head/viewport.astro";
 
+const user = Astro.locals.user;
 ---
 
 <html>
@@ -10,8 +11,31 @@ import Viewport from "src/components/shared/head/viewport.astro";
 		<title>Account</title>
 		<Viewport />
 		<Favicon />
+		<link
+			rel="stylesheet"
+			href="https://unpkg.com/simpledotcss/simple.min.css"
+		/>
 	</head>
 	<body>
-		<AccountPage client:only="preact" />
+		<header>
+			<h1>Account</h1>
+			<p>
+				{
+					user.isLoggedIn ? (
+						<>
+							Welcome back, {user.name}.{" "}
+							<a href="/api/auth/signout">Sign out</a>
+						</>
+					) : (
+						<GoogleSigninButton />
+					)
+				}
+			</p>
+		</header>
+		<main>
+			<p class="notice">
+				Your email is {user?.email}
+			</p>
+		</main>
 	</body>
 </html>

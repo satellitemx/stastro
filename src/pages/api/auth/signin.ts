@@ -34,5 +34,5 @@ export const get: APIRoute = async ({ request, cookies, redirect }) => {
 		path: "/",
 	});
 
-	return redirect("/");
+	return redirect(request.headers.get("Referer") || "/");
 };

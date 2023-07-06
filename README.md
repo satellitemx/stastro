@@ -10,7 +10,7 @@ Collection of my various utilities and services, written using the Meta framewor
 
 - [Timer](https://sate.li/lab/timer), a timer using @preact/signals. 
 - [Preact WebComponents](https://sate.li/lab/preact-webcomponents), a demo of using Preact to render Web Components. 
-- [Drive](https://sate.li/lab/drive), a Web Drive demo. 
+- Drive (currently offline), a Web Drive demo. 
 
 ### Legacy Apps
 

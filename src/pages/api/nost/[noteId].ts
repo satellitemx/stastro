@@ -16,7 +16,6 @@ export const post: APIRoute = async (ctx) => {
 			mergeFields: ["content"]
 		})
 	} catch (e) {
-		console.log(e)
 		return new Response("Failed to update document", { status: 500 })
 	}
 
