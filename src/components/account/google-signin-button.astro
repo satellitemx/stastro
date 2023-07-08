@@ -24,15 +24,14 @@ import FlexContainer from "src/components/shared/layout/flex-container.astro";
 </button>
 
 <script>
-	import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { fbApp } from "src/firebase/client";
-	const auth = getAuth(fbApp);
+	import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { fbAppAuth } from "src/firebase/client";
 	const googleSignInBtn = document.getElementById(
 		"google-signin-btn"
 	) as HTMLButtonElement;
 	googleSignInBtn.addEventListener("click", async () => {
 		const provider = new GoogleAuthProvider();
-		const userCredential = await signInWithPopup(auth, provider);
+		const userCredential = await signInWithPopup(fbAppAuth, provider);
 		const idToken = await userCredential.user.getIdToken();
 		const res = await fetch("/api/auth/signin", {
 			headers: {

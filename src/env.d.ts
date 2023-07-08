@@ -1,13 +1,13 @@
 /// <reference types="astro/client" />
 
-
 declare namespace App {
 	interface Locals {
 		user: {
-			isLoggedIn: boolean;
-			name?: string | undefined;
-			email?: string | undefined;
-		}
+			uid: string;
+			displayName: string | undefined;
+			email: string | undefined;
+			emailVerified: boolean;
+		} | null
 	}
 }
 

@@ -3,7 +3,7 @@ import GoogleSigninButton from "src/components/account/google-signin-button.astr
 import Favicon from "src/components/shared/head/favicon.astro";
 import Viewport from "src/components/shared/head/viewport.astro";
 
-const user = Astro.locals.user;
+const { user } = Astro.locals;
 ---
 
 <html>
@@ -21,9 +21,9 @@ const user = Astro.locals.user;
 			<h1>Account</h1>
 			<p>
 				{
-					user.isLoggedIn ? (
+					user ? (
 						<>
-							Welcome back, {user.name}.{" "}
+							Welcome back, {user.displayName || "User"}.{" "}
 							<a href="/api/auth/signout">Sign out</a>
 						</>
 					) : (
@@ -32,10 +32,44 @@ const user = Astro.locals.user;
 				}
 			</p>
 		</header>
-		<main>
-			<p class="notice">
-				Your email is {user?.email}
-			</p>
-		</main>
+		{
+			user && (
+				<main>
+					<form method="post" action="/api/account">
+						<p>
+							<strong>Your information</strong>
+						</p>
+						<p>
+							<label for="email">Email</label>
+							<input id="email" name="email" value={user.email} disabled />
+						</p>
+						<p>
+							<>
+								<input
+									type="checkbox"
+									id="emailVerified"
+									name="emailVerified"
+									checked={user.emailVerified}
+									disabled
+								/>
+								<label for="emailVerified">Verified</label>
+							</>
+						</p>
+						<p>
+							<label for="displayName" />
+							<input
+								id="displayName"
+								name="displayName"
+								value={user.displayName}
+							/>
+						</p>
+						<p>
+							<button type="submit">Submit</button>
+						</p>
+					</form>
+				</main>
+			)
+		}
+		<script></script>
 	</body>
 </html>

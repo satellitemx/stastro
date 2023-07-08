@@ -1,5 +1,6 @@
 import type { ServiceAccount } from "firebase-admin";
 import { cert, initializeApp } from "firebase-admin/app";
+import { getAuth } from "firebase-admin/auth";
 import { getFirestore } from "firebase-admin/firestore";
 
 const serviceAccount = {
@@ -20,3 +21,4 @@ export const fbAdmin = initializeApp({
 });
 
 export const fbAdminDb = getFirestore(fbAdmin)
+export const fbAdminAuth = getAuth(fbAdmin)
