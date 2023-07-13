@@ -22,25 +22,26 @@ const views = Astro.props.views;
 	<body>
 		<slot />
 		<ActionStrip note-id={noteId} views={views} />
-	</body><style>
-		* {
-			margin: 0;
-			padding: 0;
-			box-sizing: border-box;
-		}
-
-		body {
-			font-family: system-ui, sans-serif;
-			background: #f2f2f2;
-			font-size: 16;
-		}
-
-		@media (prefers-color-scheme: dark) {
-			body {
-				background: #222;
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
 			}
-		}
 
-		@media;
-	</style>
+			body {
+				font-family: system-ui, sans-serif;
+				background: #f2f2f2;
+				font-size: 16;
+			}
+
+			@media (prefers-color-scheme: dark) {
+				body {
+					background: #222;
+				}
+			}
+
+			@media;
+		</style>
+	</body>
 </html>
