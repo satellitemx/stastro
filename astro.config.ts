@@ -1,5 +1,5 @@
-import { defineConfig } from 'astro/config';
 import vercel from "@astrojs/vercel/serverless";
+import { defineConfig } from 'astro/config';
 // import vercel from "@astrojs/vercel/edge";
 
 import preact from "@astrojs/preact";
@@ -22,6 +22,7 @@ export default defineConfig({
     }
   }), tailwind()],
   build: {
-    format: "directory"
+    format: "directory",
+		excludeMiddleware: true,
   }
 });
