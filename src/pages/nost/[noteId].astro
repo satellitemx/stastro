@@ -1,5 +1,4 @@
 ---
-import type { NumberLike } from "hashids/cjs/util";
 import Editor from "src/components/nost/editor.astro";
 import Og from "src/components/shared/head/og.astro";
 import NostLayout from "src/components/shared/layout/nost-layout.astro";
@@ -8,9 +7,9 @@ import hashids from "src/lib/hashids";
 import removeHTMLTags from "src/lib/utilities/remove-html-tags";
 
 const noteId = Astro.params.noteId!;
-let id: NumberLike | undefined;
+let id: number | undefined;
 try {
-	id = hashids.decode(noteId).pop();
+	id = hashids.decode(noteId).pop() as number;
 } catch {}
 if (id === undefined) {
 	return Astro.redirect("/nost", 303);
@@ -32,7 +31,7 @@ try {
 		},
 		{
 			mergeFields: ["views"],
-		}
+		},
 	);
 } catch (_) {}
 ---

@@ -1,6 +1,6 @@
 import { defineMiddleware, sequence } from "astro/middleware"
 import { getAuth } from "firebase-admin/auth"
-import { cloneDeep } from "lodash-es"
+import { cloneDeep } from "lodash"
 import { fbAdmin, fbAdminAuth } from "src/firebase/server"
 
 const defaultMiddleLocals: App.Locals = {
@@ -12,7 +12,7 @@ const auth = getAuth(fbAdmin)
 const authentication = defineMiddleware(async (context, next) => {
 	const thisMiddlewareLocals = cloneDeep(defaultMiddleLocals)
 
-	const sessionCookie = context.cookies.get("session").value
+	const sessionCookie = context.cookies.get("session")?.value
 	if (sessionCookie) {
 		const decodedCookie = await auth.verifySessionCookie(sessionCookie)
 		const user = await fbAdminAuth.getUser(decodedCookie.uid)
