@@ -1,6 +1,6 @@
 import { defineMiddleware, sequence } from "astro/middleware"
 import { getAuth } from "firebase-admin/auth"
-import { cloneDeep } from "lodash"
+import { cloneDeep } from "lodash-es"
 import { fbAdmin, fbAdminAuth } from "src/firebase/server"
 
 const defaultMiddleLocals: App.Locals = {
